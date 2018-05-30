@@ -1,6 +1,6 @@
 package builder.containers
 
-import builder.components.svg
+import builder.components.{NumberInput, svg}
 import builder.raw.ReactResponsiveSelect
 import builder.raw.onsen.{Button, SearchInput, Switch}
 import builder.state.SearchParameters
@@ -53,12 +53,10 @@ object EquipmentSearchForm {
         <.span(text)
       )
 
-    def renderSelect(
-      ctx: Context,
-      options: js.Array[ReactResponsiveSelect.Option],
-      selectedValues: js.Array[String],
-      onChange: ReactResponsiveSelect.MultiChange => Callback
-    ): VdomElement =
+    def renderSelect(ctx: Context,
+                     options: js.Array[ReactResponsiveSelect.Option],
+                     selectedValues: js.Array[String],
+                     onChange: ReactResponsiveSelect.MultiChange => Callback): VdomElement =
       <.div(Theme.multiselect,
         ReactResponsiveSelect[ReactResponsiveSelect.MultiChange](
           multiselect = true,
@@ -72,6 +70,18 @@ object EquipmentSearchForm {
             } else ctx.localization.ui("any").rawNode
           })
         )
+      )
+
+    def renderLevelInputs(ctx: Context,
+                          min: Int,
+                          max: Int,
+                          onMinChange: Int => Callback,
+                          onMaxChange: Int => Callback): VdomElement =
+      <.div(Theme.itemsLevelRange,
+        ctx.localization.ui("level_short"),
+        NumberInput(Some(min), onMinChange, 1, 200),
+        "-",
+        NumberInput(Some(max), onMaxChange, 1, 200)
       )
 
     private[this] val itemFilterOptions = ItemFilter.values.map { i =>
@@ -102,6 +112,13 @@ object EquipmentSearchForm {
             onChange = ev => handleSearchInput(ev.target.value),
             placeholder = props.ctx.translation.ui("item_name")
           )
+        ),
+        renderLevelInputs(
+          props.ctx,
+          state.minLevel,
+          state.maxLevel,
+          onMinChange = v => $.modState(_.copy(minLevel = v)),
+          onMaxChange = v => $.modState(_.copy(maxLevel = v))
         ),
         renderSelect(
           ctx = props.ctx,

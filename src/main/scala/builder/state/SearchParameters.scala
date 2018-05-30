@@ -7,7 +7,7 @@ final case class SearchParameters(
   typeFilters: Seq[ItemFilter] = Seq(ItemFilter.Any),
   effectFilters: Seq[ItemEffectFilter] = Seq(ItemEffectFilter.NoFilter),
   rarities: Seq[ItemRarity] = Seq.empty,
-  minLevel: Int = 0,
+  minLevel: Int = 1,
   maxLevel: Int = 200,
   onlyBestCraft: Boolean = true
 )

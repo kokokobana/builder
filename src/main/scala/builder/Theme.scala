@@ -258,6 +258,17 @@ object Theme extends StyleSheet.Inline {
     margin(12 px, 40 px)
   )
 
+  val itemsLevelRange = style(
+    display.flex,
+    alignItems.center,
+    justifyContent.center,
+    margin(0 px, 40 px),
+    unsafeChild("input")(
+      maxWidth(60 px),
+      margin(0 px, 12 px)
+    )
+  )
+
   val switchRow = style(
     display.flex,
     flexDirection.row,
