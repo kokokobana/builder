@@ -1,0 +1,46 @@
+package builder.state
+
+import monocle.macros.Lenses
+
+@Lenses
+final case class CustomCharacteristics(
+  hp: Int = 0,
+  ap: Int = 0,
+  mp: Int = 0,
+  wp: Int = 0,
+  waterMastery: Int = 0,
+  waterResist: Int = 0,
+  earthMastery: Int = 0,
+  earthResist: Int = 0,
+  airMastery: Int = 0,
+  airResist: Int = 0,
+  fireMastery: Int = 0,
+  fireResist: Int = 0,
+  apRemoval: Int = 0,
+  apResist: Int = 0,
+  mpRemoval: Int = 0,
+  mpResist: Int = 0,
+  damageInflicted: Int = 0,
+  healsPerformed: Int = 0,
+  criticalHits: Int = 0,
+  block: Int = 0,
+  initiative: Int = 0,
+  range: Int = 0,
+  dodge: Int = 0,
+  lock: Int = 0,
+  wisdom: Int = 0,
+  prospecting: Int = 0,
+  control: Int = 0,
+  kitSkill: Int = 0,
+  finalHpPercent: Int = 0,
+  criticalMastery: Int = 0,
+  criticalResist: Int = 0,
+  rearMastery: Int = 0,
+  rearResist: Int = 0,
+  meleeMastery: Int = 0,
+  distanceMastery: Int = 0,
+  singleTargetMastery: Int = 0,
+  areaMastery: Int = 0,
+  healMastery: Int = 0,
+  berserkMastery: Int = 0
+)

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/onsen/2.9.2/css/onsen-css-components.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/onsen/2.9.2/css/onsenui.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/react-responsive-select@3.1.4/dist/ReactResponsiveSelect.css"/>
+    <style>
+body {
+    background: #fbfbfb;
+    font-size: 16px;
+    font-family: Helvetica,sans-serif
+}
+
+*,:after,:before {
+    box-sizing: border-box
+}
+
+.desktop-bar,.desktop-mode>div {
+    position: absolute;
+    border-bottom: 1px solid #d7d7e1;
+    border-right: 1px solid #d7d7e1
+}
+
+.desktop-bar,.desktop-mode>ons-page {
+    left: calc((100% - 800px)/2);
+    border-left: 1px solid #d7d7e1
+}
+
+.desktop-bar {
+    z-index: 3;
+    height: 54px;
+    width: 800px
+}
+
+.desktop-mode>ons-page {
+    width: 460px;
+    max-height: 680px;
+    border-bottom: 1px solid #d7d7e1;
+    top: 54px
+}
+
+.desktop-mode>div {
+    left: calc((100% - 800px)/2 + 460px);
+    height: 680px;
+    width: 340px;
+    top: 54px
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem auto;
+    max-width: 700px
+}
+
+form .rrs {
+    width: 50%;
+    max-width: 50%
+}
+
+form .rrs:not(:last-child) {
+    margin-right: 8px
+}
+
+.caret-icon {
+    position: absolute;
+    right: 1rem;
+    top: 1.25rem;
+    fill: #333
+}
+
+.rrs--options-visible .caret-icon {
+    transform: rotate(180deg)
+}
+
+.rrs__options {
+    transition: all .2s cubic-bezier(.19,1,.22,1);
+    transition-property: max-height,opacity;
+    max-height: 0;
+    opacity: 0
+}
+
+.rrs--options-visible .rrs__options {
+    opacity: 1
+}
+
+.checkbox {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    margin: 2px 10px 2px 0;
+    border-radius: 50%
+}
+
+.rrs__option.rrs__option--selected .checkbox {
+    border: 1px solid #0273b5
+}
+
+.checkbox-icon {
+    fill: #fff;
+    position: absolute;
+    left: 4px;
+    top: 4px
+}
+
+.rrs__option.rrs__option--selected .checkbox-icon {
+    fill: #0273b5
+}
+
+.tab {
+    display: inline-block;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transform: translate(0,-1px);
+    line-height: 1;
+    padding: 3px 10px 2px;
+    margin: 0 4px 0 0;
+    font-size: 16px
+}
+
+.bottom-bar--equipment-bar {
+    height: 88px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-evenly
+}
+
+.page-with-bottom-toolbar>.page__content {
+    bottom: 88px
+}
+
+@media only screen and (min-width:375px) {
+    .bottom-bar--equipment-bar {
+        height: 98px
+    }
+
+    .page-with-bottom-toolbar>.page__content {
+        bottom: 98px
+    }
+}
+
+.checkbox-container {
+    margin: 0 auto;
+    display: block;
+    width: 52px;
+    height: 32px;
+    border: solid 1px rgba(0,0,10,.5);
+    border-radius: 5px;
+    position: relative;
+}
+
+.checkbox-container img {
+    z-index: 0;
+    display: inline-block;
+    position: absolute;
+    top: 9px;
+    right: 0
+}
+
+.checkbox-container label {
+    z-index: 0;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.checkbox-container label div {
+    height: 14px;
+    width: 14px;
+    border: solid 2px rgba(56,56,56,.9);
+    margin: 8px;
+    border-radius: 50%;
+    transform: rotate(45deg);
+    transition: all 100ms ease-in-out,border 50ms ease 100ms
+}
+
+.checkbox-container input {
+    margin: 0;
+    opacity: 0;
+    z-index: 1;
+    position: relative;
+    cursor: pointer
+}
+
+.checkbox-container input:checked+label>div {
+    border-radius: 0;
+    border-top: 0;
+    border-left: 0;
+    border-color: rgba(56,56,56,.9);
+    height: 20px;
+    width: 12px;
+    margin-top: 3px;
+    margin-left: 10px;
+    transform: rotate(40deg);
+    transition: all 150ms ease-in-out
+}
+
+.toolbar--transparent.toolbar--material .button--material {
+    top: 6px
+}
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+</head>
+<body>
+<div id="app"></div>
+<script src="target/scala-2.12/scalajs-bundler/main/builder-fastopt-library.js"></script>
+<script src="target/scala-2.12/scalajs-bundler/main/builder-fastopt-loader.js"></script>
+<script src="target/scala-2.12/scalajs-bundler/main/builder-fastopt.js"></script>
+</body>
+</html>
