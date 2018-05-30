@@ -1,6 +1,6 @@
 package builder.containers
 
-import builder.components.NumberInput
+import builder.components.ControlledNumberInput
 import builder.state.CharacterLevelState
 import builder.{Context, MainCircuit, SetLevel}
 import diode.react.ModelProxy
@@ -17,8 +17,8 @@ object LevelInput {
     }
 
   private val component = ScalaFnComponent[Props] { case Props(ctx, model) =>
-    NumberInput(
-      initialValue = Some(model.value.level),
+    ControlledNumberInput(
+      value = model.value.level,
       onChange = n => model.dispatchCB(SetLevel(n)),
       min = 1,
       max = 200

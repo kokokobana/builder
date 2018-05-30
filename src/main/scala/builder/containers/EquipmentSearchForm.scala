@@ -1,6 +1,6 @@
 package builder.containers
 
-import builder.components.{NumberInput, svg}
+import builder.components.{ControlledNumberInput, NumberInput, svg}
 import builder.raw.ReactResponsiveSelect
 import builder.raw.onsen.{Button, SearchInput, Switch}
 import builder.state.SearchParameters
@@ -79,9 +79,9 @@ object EquipmentSearchForm {
                           onMaxChange: Int => Callback): VdomElement =
       <.div(Theme.itemsLevelRange,
         ctx.localization.ui("level_short"),
-        NumberInput(Some(min), onMinChange, 1, 200),
+        ControlledNumberInput(min, onMinChange, 1, 200),
         "-",
-        NumberInput(Some(max), onMaxChange, 1, 200)
+        ControlledNumberInput(max, onMaxChange, 1, 200)
       )
 
     private[this] val itemFilterOptions = ItemFilter.values.map { i =>

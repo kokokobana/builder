@@ -8,23 +8,20 @@ import japgolly.scalajs.react.vdom.html_<^._
 import scala.scalajs.js
 
 object NumberInput {
-  final case class Props(
-    initialValue: Option[Int],
-    onChange: Int => Callback,
-    min: Int,
-    max: Int
-  )
+  final case class Props(initialValue: Option[Int],
+                         onChange: Int => Callback,
+                         min: Int,
+                         max: Int)
   final case class State(value: Option[Int])
 
   implicit val propsReusability: Reusability[Props] = Reusability.always
   implicit val stateReusability: Reusability[State] = Reusability.never
 
-  def apply(
-    initialValue: Option[Int],
-    onChange: Int => Callback,
-    min: Int,
-    max: Int
-  ): VdomElement = component(Props(initialValue, onChange, min, max))
+  def apply(initialValue: Option[Int],
+            onChange: Int => Callback,
+            min: Int,
+            max: Int): VdomElement =
+    component(Props(initialValue, onChange, min, max))
 
   private val component = ScalaComponent.builder[Props]("NumberInput")
     .initialStateFromProps { props => State(props.initialValue) }
@@ -44,4 +41,30 @@ object NumberInput {
     }
     .configure(Reusability.shouldComponentUpdate)
     .build
+}
+
+object ControlledNumberInput {
+  final case class Props(value: Int,
+                         onChange: Int => Callback,
+                         min: Int,
+                         max: Int)
+
+  def apply(value: Int,
+            onChange: Int => Callback,
+            min: Int,
+            max: Int): VdomElement =
+    component(Props(value, onChange, min, max))
+
+  private val component = ScalaFnComponent[Props] { case Props(value, onChange, min, max) =>
+    Input(
+      `type` = "number",
+      modifier = "underbar",
+      value = value.toString,
+      onChange = js.defined { ev =>
+        val value = ev.target.value
+        if (value.isEmpty) Callback.empty
+        else onChange(math.min(math.max(value.toInt, min), max))
+      }
+    )
+  }
 }
