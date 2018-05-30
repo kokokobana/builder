@@ -8,6 +8,7 @@ import monocle.macros.Lenses
 import monocle.{Fold, Getter, Traversal}
 import org.bitbucket.wakfuthesaurus.shared.data.ItemType._
 import org.bitbucket.wakfuthesaurus.shared.data.{Element, Item, ItemType, RuneType}
+import shapeless.syntax.std.tuple._
 
 @Lenses
 final case class Equipment[T](
@@ -63,7 +64,7 @@ object Weapons {
   final case class OneHanded[T](state: Ior[T, T]) extends Weapons[T] {
     override def left: Option[T] = state.left
     override def right: Option[T] = state.right
-    override def both: List[T] = state.toList
+    override def both: List[T] = state.pad.to[List].flatten
   }
   case object Bare extends Weapons[Nothing] {
     override def left: Option[Nothing] = None
