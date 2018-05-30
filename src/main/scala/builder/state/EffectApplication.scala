@@ -101,6 +101,7 @@ object EffectApplication {
         mp.modify(_ + skills.major.mpAndDamage) andThen
         wp.modify(_ + skills.major.wp * 2) andThen
         damageInflicted.modify(_ + skills.major.damageInflicted * 10) andThen
+        generalResist.modify(_ + skills.major.majorResistance * 50) andThen
         range.modify(_ + skills.major.rangeAndDamage) andThen
         control.modify(_ + skills.major.controlAndDamage * 2) andThen
         generalResist.modify(_ + skills.intelligence.elementalResist * 10) andThen
