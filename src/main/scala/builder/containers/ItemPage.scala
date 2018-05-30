@@ -48,7 +48,7 @@ object RuneDialog {
             Select(
               onChange = { ev =>
                 RuneType.withNameOption(ev.target.value) match {
-                  case Some(rt) => slot.modState(st => Some(st.fold(Rune(rt, 20))(_.copy(`type` = rt))))
+                  case Some(rt) => slot.modState(st => Some(st.fold(Rune(rt, 10))(_.copy(`type` = rt))))
                   case None => slot.setState(None)
                 }
               },
@@ -67,7 +67,7 @@ object RuneDialog {
                       initialValue = Some(rune.level),
                       onChange = i => slot.modState(_.map(_.copy(level = i))),
                       min = 0,
-                      max = 20
+                      max = 10
                     )
                   ), ctx.localization.ui("level_short")
                 )
