@@ -85,6 +85,13 @@ object Weapons {
       case Bare => Bare
     }
 
+  def remove(defaultRightHand: Boolean, weapons: Weapons[SlotState]): Weapons[SlotState] = weapons match {
+    case TwoHanded(_) => Weapons.Bare
+    case OneHanded(Ior.Both(_, r)) if !defaultRightHand => OneHanded(Ior.Right(r))
+    case OneHanded(Ior.Both(l, _)) => OneHanded(Ior.Left(l))
+    case _ => Bare
+  }
+
   def apply(slot: SlotState): Option[Weapons[SlotState]] =
     ItemType.withValueOpt(slot.item.typeId).collect {
       case ItemType.Dagger | ItemType.Shield => OneHanded(Ior.Left(slot))
@@ -94,8 +101,9 @@ object Weapons {
            ItemType.TwoHandStaff | ItemType.TwoHandSword => TwoHanded(slot)
     }
 
-  def setter: Option[SlotState] => Equipment[SlotState] => Equipment[SlotState] = slot => eq =>
-    slot.flatMap(apply).fold(eq)(v => eq.copy(weapon = combine(eq.weapon, v)))
+  def setter(defaultRightHand: Boolean): Option[SlotState] => Equipment[SlotState] => Equipment[SlotState] = slot => eq =>
+    slot.flatMap(apply)
+      .fold(eq.copy(weapon = remove(defaultRightHand, eq.weapon)))(v => eq.copy(weapon = combine(eq.weapon, v)))
 
   implicit val functor: Functor[Weapons] = new Functor[Weapons] {
     override def map[A, B](fa: Weapons[A])(f: A => B): Weapons[B] =

@@ -87,6 +87,13 @@ object Theme extends StyleSheet.Inline {
     transform := "translate(-50%,-50%)"
   )
 
+  val equipmentItemRemove = style(
+    position.absolute,
+    top(-2 px),
+    right(2 px),
+    cursor.pointer
+  )
+
   val deckContainer = style(
     maxWidth(340 px),
     margin.auto

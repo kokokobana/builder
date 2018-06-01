@@ -1,8 +1,8 @@
 package builder.containers
 import builder._
-import builder.raw.onsen.BottomToolbar
+import builder.raw.onsen.{BottomToolbar, Icon}
 import builder.raw.onsen.Navigator.NavHandler
-import builder.state.{EquipmentSlot, Equipment, SlotState}
+import builder.state.{Equipment, EquipmentSlot, SlotState}
 import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.Reusability
@@ -28,40 +28,51 @@ object EquipmentToolbar {
         EquipmentSlot.Boots, EquipmentSlot.Pet, EquipmentSlot.Costume, EquipmentSlot.LeftHand,
         EquipmentSlot.RightHand, EquipmentSlot.Emblem, EquipmentSlot.Mount
       ).zipWithIndex.map { case (slot, i) =>
-        SlotComponent(ctx, i, slot, slot.lens.get(model.value), nav)
+        SlotComponent(ctx, i, slot, slot.lens.get(model.value), model.dispatchCB(UpdateEquipment(slot.lens.set(None))), nav)
       }.toVdomArray
     )
   }
 
   object SlotComponent {
-    final case class Props(
-      context: Context,
-      slot: EquipmentSlot,
-      state: Option[SlotState],
-      nav: NavHandler[EquipmentView.Route]
-    )
-    implicit val reusability: Reusability[Props] = Reusability.by(_.state.map(_.item.id))
+    final case class Props(context: Context,
+                           slot: EquipmentSlot,
+                           slotState: Option[SlotState],
+                           onRemove: Callback,
+                           nav: NavHandler[EquipmentView.Route])
 
-    def apply(
-      ctx: Context,
-      key: Int,
-      slot: EquipmentSlot,
-      state: Option[SlotState],
-      nav: NavHandler[EquipmentView.Route]
-    ): VdomElement = component.withKey(key)(Props(ctx, slot, state, nav))
+    final case class State(hovered: Boolean)
+
+    implicit val propsReusability: Reusability[Props] = Reusability.by(_.slotState.map(_.item.id))
+    implicit val stateReusability: Reusability[State] = Reusability.by_==
+
+    def apply(ctx: Context,
+              key: Int,
+              slot: EquipmentSlot,
+              slotState: Option[SlotState],
+              onRemove: Callback,
+              nav: NavHandler[EquipmentView.Route]): VdomElement =
+      component.withKey(key)(Props(ctx, slot, slotState, onRemove, nav))
 
     private val component = ScalaComponent.builder[Props]("SlotComponent")
-      .render_P { case Props(ctx, slot, state, nav) =>
-        state match {
+      .initialState(State(false))
+      .render { $ =>
+        val Props(ctx, slot, slotState, onRemove, nav) = $.props
+        slotState match {
           case None =>
             <.div(Theme.equipmentSlotContainer,
               ctx.assets.icon(s"slots/${slot.icon}.png", Some(Theme.equipmentSlotIcon))
             )
           case Some(st) =>
             <.div(Theme.equipmentSlotContainer,
+              ^.onMouseEnter --> $.setState(State(true)),
+              ^.onMouseLeave --> $.setState(State(false)),
               ^.onClick --> Callback(nav.pushPage(EquipmentView.Route.Item(slot.lens))),
               ctx.assets.icon("slots/blank.png", Some(Theme.equipmentSlotIcon)),
-              ctx.assets.itemIcon(st.item.gfxId, Some(Theme.equipmentItemIcon))
+              ctx.assets.itemIcon(st.item.gfxId, Some(Theme.equipmentItemIcon)),
+              <.div(Theme.equipmentItemRemove,
+                ^.onClick ==> { ev => ev.stopPropagationCB *> onRemove },
+                Icon(icon = "times", size = 16, color = "red")
+              ).when($.state.hovered)
             )
         }
       }.configure(Reusability.shouldComponentUpdate)

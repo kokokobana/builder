@@ -324,8 +324,9 @@ object MainCircuit extends Circuit[BuilderState] with ReactConnector[BuilderStat
     case ItemType.Emblem => Equipment.insignia.set
     case ItemType.Mount => Equipment.mount.set
     case ItemType.Axe | ItemType.Bow | ItemType.Hammer | ItemType.Shovel | ItemType.TwoHandStaff |
-         ItemType.TwoHandSword | ItemType.Dagger | ItemType.Shield | ItemType.Cards | ItemType.Hand |
-         ItemType.OneHandStaff | ItemType.OneHandSword | ItemType.Wand => Weapons.setter
+         ItemType.TwoHandSword | ItemType.Cards | ItemType.Hand | ItemType.OneHandStaff | ItemType.OneHandSword |
+         ItemType.Wand => Weapons.setter(true)
+    case ItemType.Dagger | ItemType.Shield => Weapons.setter(false)
   }
 }
 

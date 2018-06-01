@@ -27,11 +27,11 @@ object EquipmentSlot {
   }
   case object LeftHand extends EquipmentSlot("left_hand") {
     override def lens: Lens[Equipment[SlotState], Option[SlotState]] =
-      Lens[Equipment[SlotState], Option[SlotState]](_.weapon.left)(Weapons.setter)
+      Lens[Equipment[SlotState], Option[SlotState]](_.weapon.left)(Weapons.setter(false))
   }
   case object RightHand extends EquipmentSlot("right_hand") {
     override val lens: Lens[Equipment[SlotState], Option[SlotState]] =
-      Lens[Equipment[SlotState], Option[SlotState]](_.weapon.right)(Weapons.setter)
+      Lens[Equipment[SlotState], Option[SlotState]](_.weapon.right)(Weapons.setter(true))
   }
   case object Belt extends EquipmentSlot("belt") {
     override val lens: Lens[Equipment[SlotState], Option[SlotState]] = Equipment.belt
