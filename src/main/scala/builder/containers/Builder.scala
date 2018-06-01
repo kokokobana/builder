@@ -24,11 +24,7 @@ object BuilderContainer {
     }
 
   def initialize($: ComponentDidMount[Props, Unit, Unit]): Callback = Callback.lazily {
-    val params = window.location.search.substring(1).split("&").map { str =>
-      val (k, v) = str.span(_ != '=')
-      k -> js.URIUtils.decodeURIComponent(v.substring(1))
-    }.toMap
-    params.get("code") match {
+    MainCircuit.params.build match {
       case Some(code) =>
         $.props.model.dispatchCB(LoadBuild(code))
       case None =>
@@ -63,9 +59,9 @@ object Builder {
       component(Props(context, model))
     }
 
-  def renderToolbar(openSideMenu: Callback): () => VdomElement = () =>
+  def renderToolbar(ctx: Context, openSideMenu: Callback): () => VdomElement = () =>
     Toolbar()(
-      <.div(^.className := "center", "Builder"),
+      <.div(^.className := "center", ctx.localization.ui("builder")),
       <.div(^.className := "right")(
         ToolbarButton(onClick = () => openSideMenu)(
           Icon(icon = "ion-navicon, material:md-menu")
@@ -76,34 +72,34 @@ object Builder {
   def characteristicTab(ctx: Context)(i: Int): Tabbar.Entry =
     Tabbar.Entry(
       Page()(^.key := i)(CharacteristicView(ctx)).rawNode,
-      Tab(label = "Stats", icon = "md-equalizer")(^.key := i).rawNode
+      Tab(label = ctx.translation.ui("stats"), icon = "md-equalizer")(^.key := i).rawNode
     )
   def skillsTab(ctx: Context)(i: Int): Tabbar.Entry =
     Tabbar.Entry(
       Page()(^.key := i)(SkillsView(ctx)).rawNode,
-      Tab(label = "Skills", icon = "md-tune")(^.key := i).rawNode
+      Tab(label = ctx.translation.ui("skills"), icon = "md-tune")(^.key := i).rawNode
     )
   def spellsTab(ctx: Context)(i: Int): Tabbar.Entry =
     Tabbar.Entry(
       SpellsView(i, ctx).rawNode,
-      Tab(label = "Spells", icon = "md-book")(^.key := i).rawNode
+      Tab(label = ctx.translation.ui("spells"), icon = "md-book")(^.key := i).rawNode
     )
   def equipmentTab(ctx: Context)(i: Int): Tabbar.Entry =
     Tabbar.Entry(
       EquipmentView(i, ctx).rawNode,
-      Tab(label = "Gear", icon = "md-shield-security")(^.key := i).rawNode
+      Tab(label = ctx.translation.ui("gear"), icon = "md-shield-security")(^.key := i).rawNode
     )
   def customTab(ctx: Context)(i: Int): Tabbar.Entry =
     Tabbar.Entry(
       Page()(^.key := i)(CharacteristicCustomization(ctx)).rawNode,
-      Tab(label = "Custom", icon = "md-edit")(^.key := i).rawNode
+      Tab(label = ctx.translation.ui("custom"), icon = "md-edit")(^.key := i).rawNode
     )
 
   private val component = ScalaFnComponent[Props] { case Props(ctx, model) =>
     Page(
       renderToolbar =
         if (util.common.isTouchDevice)
-          renderToolbar(model.dispatchCB(SetSideMenu(open = true, silent = false)))
+          renderToolbar(ctx, model.dispatchCB(SetSideMenu(open = true, silent = false)))
         else js.undefined,
       renderModal = () => Loading.apply
     )(

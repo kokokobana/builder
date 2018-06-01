@@ -34,7 +34,7 @@ object RingSelect {
       )(label)
 
     AlertDialog(isOpen = model.value.alertItem.isDefined, isCancelable = false)(
-      <.div(^.className := "alert-dialog-title")("Please select a ring slot"),
+      <.div(^.className := "alert-dialog-title")(ctx.localization.ui("select_slot")),
       <.div(^.className := "alert-dialog-content"),
       <.div(^.className := "alert-dialog-footer")(
         equipButton(Equipment.rightRing, ctx.localization.ui("equip_right")),

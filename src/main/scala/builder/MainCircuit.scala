@@ -21,8 +21,15 @@ import scala.language.postfixOps
 object MainCircuit extends Circuit[BuilderState] with ReactConnector[BuilderState] {
   type HandleFunction[T] = PartialFunction[Any, ActionResult[T]]
 
-  val lang: Translation = builder.lang.english
-  val api = new Service(Config.apiUrl, Config.bucketUrl)
+  val params: Params = parseParams()
+
+  val lang: Translation =
+    params.lang match {
+      case "en" => builder.lang.english
+      case "fr" => builder.lang.french
+      case "es" => builder.lang.spanish
+    }
+  val api = new Service(Config.apiUrl, Config.bucketUrl, params.lang)
   val context: Context = Context(lang, api, Config.bucketUrl)
 
   override protected def initialModel: BuilderState = BuilderState()

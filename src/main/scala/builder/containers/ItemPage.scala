@@ -43,7 +43,7 @@ object RuneDialog {
 
         val value = slot.value.fold("-1")(_.`type`.entryName)
         AlertDialog(isOpen = true, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Customize a rune slot"),
+          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("customize_rune")),
           <.div(Theme.runePopupContent, ^.className := "alert-dialog-content")(
             Select(
               onChange = { ev =>
@@ -54,7 +54,7 @@ object RuneDialog {
               },
               value = value
             )(
-              <.option(^.value := "-1")("Empty"),
+              <.option(^.value := "-1")(ctx.localization.ui("empty_rune")),
               types.map { tp =>
                 <.option(^.key := tp.entryName, ^.value := tp.entryName, ctx.localization.itemRune(tp.entryName))
               }.toVdomArray
@@ -132,7 +132,7 @@ object ItemPage {
         ).render,
         renderEffects(ctx, slot),
         if (slot.value.runes.nonEmpty)
-          <.div(Theme.itemHeaderRow, "Runes").render
+          <.div(Theme.itemHeaderRow, ctx.localization.ui("runes")).render
         else EmptyVdom,
         renderRunes(ctx, slot),
         RuneDialog(ctx, runeSnapshot, slot.value.getRuneSlotType, $.setState(State(None)))
@@ -156,7 +156,7 @@ object ItemPage {
               rune => ctx.assets.icon(s"runes/${rune.`type`.entryName}.png", Some(Theme.itemRuneIcon))
             }),
             <.span(Theme.itemRuneLabel,
-              maybeRune.fold("Empty rune slot") { rune =>
+              maybeRune.fold(ctx.translation.ui("empty_rune")) { rune =>
                 util.item.formatRune(rune.`type`, ctx.translation, rune.level)
               }
             )

@@ -32,21 +32,21 @@ object BuildCodeDialog {
     model.value.state match {
       case Empty =>
         AlertDialog(isOpen = false, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Customize a rune slot"),
+          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("share_build")),
           <.div(^.className := "alert-dialog-content"),
           <.div(^.className := "alert-dialog-footer")
         )
       case Ready(resp) =>
         val loc = window.location
         AlertDialog(isOpen = true, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Share your build"),
+          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("share_build")),
           <.div(Theme.buildCodePopupContent, ^.className := "alert-dialog-content")(
-            <.span("Unique code"),
+            <.span(ctx.localization.ui("unique_code")),
             <.div(Theme.buildCodePopupRow,
               Input(inputId = "code", modifier = "underbar", value = resp.code),
               Button(onClick = () => copyToClipboard("code"))(Icon(icon = "clipboard"))
             ),
-            <.span("URL"),
+            <.span(ctx.localization.ui("url")),
             <.div(Theme.buildCodePopupRow,
               Input(inputId = "code-url", modifier = "underbar", value =
                 s"${loc.protocol}//${loc.host}/${loc.pathname}?code=${resp.code}"),
@@ -63,13 +63,13 @@ object BuildCodeDialog {
         )
       case Pending(_) =>
         AlertDialog(isOpen = true, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Saving your build"),
+          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("share_build")),
           <.div(^.className := "alert-dialog-content", ProgressCircular()),
           <.div(^.className := "alert-dialog-footer")
         )
       case _ =>
         AlertDialog(isOpen = true, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Customize a rune slot"),
+          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("share_build")),
           <.div(^.className := "alert-dialog-content", "Failed to save the build"),
           <.div(^.className := "alert-dialog-footer",
             <.button(
