@@ -2,6 +2,7 @@ package builder.lang
 
 trait Translation {
   def mapping: Map[String, String]
+  def symbol: String
 
   final def getByKey(key: String): String = {
     mapping.getOrElse(key, key)

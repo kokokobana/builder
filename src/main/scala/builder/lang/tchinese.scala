@@ -1,6 +1,8 @@
 package builder.lang
 
-object english extends Translation {
+object tchinese extends Translation {
+  override def symbol: String = "cn"
+
   override val mapping: Map[String, String] = Map(
     "ui.mastery" -> "屬性",
     "ui.battle" -> "戰鬥",
@@ -39,11 +41,7 @@ object english extends Translation {
     "ui.search_no_results" -> "查無項目 !",
     "ui.undefined_item" -> "未定義項目",
     "ui.undefined_rarity" -> "未定義稀有度",
-    "ui.shift_tip" -> "按住 Shift 可一次增加 10",
-    "ui.elemental_bonuses_tip" -> "依照等級，表格包含了任務的元素屬性加成",
     "ui.remove" -> "移除",
-    "ui.generate_link" -> "產生連結",
-    "ui.get_build_from_url" -> "從連結載入配裝",
     "ui.align_masteries" -> "同步屬性",
     "ui.align_resists" -> "同步抗性",
     "ui.intelligence" -> "智慧",
@@ -59,7 +57,6 @@ object english extends Translation {
     "ui.no_filter" -> "無過濾",
     "charac.no_filter" -> "無過濾",
     "ui.selected" -> "已選擇",
-    "ui.options_selected" -> "選項已選擇",
     "ui.clear" -> "清除",
     "ui.normal" -> "正常",
     "ui.critical" -> "爆擊",
@@ -79,9 +76,6 @@ object english extends Translation {
     "ui.passives" -> "被動",
     "ui.elemental_spells" -> "元素技能",
     "ui.support_spells" -> "支援技能",
-    "ui.copied_deck_code" -> "已複製代碼",
-    "ui.invalid_deck_code" -> "無效的代碼 !",
-    "ui.applied_deck_code" -> "已套用代碼 !",
     "ui.on_equip" -> "裝備時",
     "ui.on_use" -> "使用時",
     "ui.use_per_turn" -> "次在一回合",
@@ -100,6 +94,16 @@ object english extends Translation {
     "ui.element_priority" -> "元素優先",
     "ui.sex" -> "性別",
     "ui.share" -> "分享",
+    "ui.stats" -> "素質",
+    "ui.custom" -> "自訂",
+    "ui.select_slot" -> "選擇槽位",
+    "ui.unique_code" -> "獨立代碼",
+    "ui.url" -> "網址",
+    "ui.share_build" -> "分享配裝",
+    "ui.builder" -> "配裝",
+    "ui.runes" -> "符文",
+    "ui.empty_rune" -> "清空符文槽位",
+    "ui.customize_rune" -> "自訂一個符文槽位",
     "sex.male" -> "男",
     "sex.female" -> "女",
     "element.fire" -> "火",

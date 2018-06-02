@@ -49,7 +49,7 @@ object BuildCodeDialog {
             <.span(ctx.localization.ui("url")),
             <.div(Theme.buildCodePopupRow,
               Input(inputId = "code-url", modifier = "underbar", value =
-                s"${loc.protocol}//${loc.host}/${loc.pathname}?code=${resp.code}"),
+                s"${loc.protocol}//${loc.host}/${loc.pathname}?code=${resp.code}&lang=${ctx.translation.symbol}"),
               Button(onClick = () => copyToClipboard("code-url"))(Icon(icon = "clipboard"))
             )
           ),

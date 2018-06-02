@@ -1,6 +1,8 @@
 package builder.lang
 
 object english extends Translation {
+  override def symbol: String = "en"
+
   override val mapping: Map[String, String] = Map(
     "ui.mastery" -> "Mastery",
     "ui.battle" -> "Battle",

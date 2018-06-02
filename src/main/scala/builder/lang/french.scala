@@ -1,6 +1,8 @@
 package builder.lang
 
 object french extends Translation {
+  override def symbol: String = "fr"
+
   override val mapping: Map[String, String] = Map(
     "ui.mastery" -> "Maitrise",
     "ui.battle" -> "Battaille",
@@ -33,17 +35,13 @@ object french extends Translation {
     "ui.nation" -> "Nation",
     "ui.hairstyle" -> "Coiffure",
     "ui.body" -> "Vêtements",
-    "ui.pick_hair_color" -> "Cheuveux",
+    "ui.pick_hair_color" -> "Cheveux",
     "ui.pick_skin_color" -> "Peau",
     "ui.pick_pupil_color" -> "Pupilles",
     "ui.search_no_results" -> "Aucun resultats!",
     "ui.undefined_item" -> "Objet indéterminé",
     "ui.undefined_rarity" -> "Rareté indéterminé",
-    "ui.shift_tip" -> "Maintenir shift pour augmenter de 10",
-    "ui.elemental_bonuses_tip" -> "Le tableau inclus les bonus de maitrise élémentaire par quêtes, basé sur le niveau",
     "ui.remove" -> "Enlever",
-    "ui.generate_link" -> "Générer un lien",
-    "ui.get_build_from_url" -> "Charger un build à partir d'un lien",
     "ui.align_masteries" -> "Aligner les maitrises élem.",
     "ui.align_resists" -> "Aligner les résis éleme",
     "ui.intelligence" -> "Intelligence",
@@ -79,9 +77,6 @@ object french extends Translation {
     "ui.passives" -> "Passifs",
     "ui.elemental_spells" -> "Sorts élémentaire",
     "ui.support_spells" -> "Sorts actifs",
-    "ui.copied_deck_code" -> "Code deck copié!",
-    "ui.invalid_deck_code" -> "Code deck invalide!",
-    "ui.applied_deck_code" -> "Code deck appliqué!",
     "ui.on_equip" -> "À l'équipement",
     "ui.on_use" -> "Sur utilisation",
     "ui.use_per_turn" -> "Utilisation(s) par tour",

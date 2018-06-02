@@ -1,6 +1,8 @@
 package builder.lang
 
 object spanish extends Translation {
+  override def symbol: String = "es"
+
   override val mapping: Map[String, String] = Map(
     "ui.mastery" -> "Dominio",
     "ui.battle" -> "Batalla",
@@ -22,7 +24,6 @@ object spanish extends Translation {
     "ui.equip_right" -> "Equipar a la derecha",
     "ui.update" -> "Actualizar",
     "ui.unequip" -> "Desequipar",
-    "ui.pick_elements" -> "Selecciona elementos!",
     "ui.second_relic" -> "No puedes equipar otra reliquia!",
     "ui.second_epic" -> "No puedes equipar otro epico!",
     "ui.level_short" -> "Lvl.",
@@ -39,11 +40,7 @@ object spanish extends Translation {
     "ui.search_no_results" -> "Sin resultados!",
     "ui.undefined_item" -> "Objeto indefinido",
     "ui.undefined_rarity" -> "Rareza indefinida",
-    "ui.shift_tip" -> "Manten shift para subir 10",
-    "ui.elemental_bonuses_tip" -> "Incluye los bonus de maestria elemental de las mision por nivel",
     "ui.remove" -> "Eliminar",
-    "ui.generate_link" -> "Generar un link",
-    "ui.get_build_from_url" -> "Cargar la build desde un link",
     "ui.align_masteries" -> "Alinear la maestria elemental",
     "ui.align_resists" -> "Alinear la resistencia elemental",
     "ui.intelligence" -> "Inteligencia",
@@ -79,9 +76,6 @@ object spanish extends Translation {
     "ui.passives" -> "Pasivas",
     "ui.elemental_spells" -> "Hechizos elementares",
     "ui.support_spells" -> "Hechizos de especialidad",
-    "ui.copied_deck_code" -> "Codigo del deck copiado!",
-    "ui.invalid_deck_code" -> "Codigo del deck invalido!",
-    "ui.applied_deck_code" -> "Codigo del deck insertado!",
     "ui.on_equip" -> "En equipo",
     "ui.on_use" -> "En uso",
     "ui.use_per_turn" -> "Uso(s) por turno",

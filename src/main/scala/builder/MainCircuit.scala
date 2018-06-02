@@ -28,6 +28,8 @@ object MainCircuit extends Circuit[BuilderState] with ReactConnector[BuilderStat
       case "en" => builder.lang.english
       case "fr" => builder.lang.french
       case "es" => builder.lang.spanish
+      case "cn" => builder.lang.tchinese
+      case "pt" => builder.lang.portuguese
     }
   val api = new Service(Config.apiUrl, Config.bucketUrl, params.lang)
   val context: Context = Context(lang, api, Config.bucketUrl)
