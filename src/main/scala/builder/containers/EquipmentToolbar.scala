@@ -64,8 +64,8 @@ object EquipmentToolbar {
             )
           case Some(st) =>
             <.div(Theme.equipmentSlotContainer,
-              ^.onMouseEnter --> $.setState(State(true)),
-              ^.onMouseLeave --> $.setState(State(false)),
+              ^.onMouseEnter --> $.setState(State(true)).when_(!util.common.isTouchDevice),
+              ^.onMouseLeave --> $.setState(State(false)).when_(!util.common.isTouchDevice),
               ^.onClick --> Callback(nav.pushPage(EquipmentView.Route.Item(slot.lens))),
               ctx.assets.icon("slots/blank.png", Some(Theme.equipmentSlotIcon)),
               ctx.assets.itemIcon(st.item.gfxId, Some(Theme.equipmentItemIcon)),
