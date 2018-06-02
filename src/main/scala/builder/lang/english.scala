@@ -36,6 +36,7 @@ object english extends Translation {
     "ui.search_no_results" -> "No results!",
     "ui.undefined_item" -> "Undefined item",
     "ui.undefined_rarity" -> "Undefined rarity",
+    "ui.remove" -> "Remove",
     "ui.align_masteries" -> "Align elem. masteries",
     "ui.align_resists" -> "Align elem. resists",
     "ui.intelligence" -> "Intelligence",

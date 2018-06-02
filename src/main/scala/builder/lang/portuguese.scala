@@ -36,6 +36,7 @@ object portuguese extends Translation {
     "ui.search_no_results" -> "Sem resultados!",
     "ui.undefined_item" -> "Item indefinido",
     "ui.undefined_rarity" -> "Raridade indefinida",
+    "ui.remove" -> "Remover",
     "ui.align_masteries" -> "Alinhar domínios elementais",
     "ui.align_resists" -> "Alinhar resistências elementais",
     "ui.intelligence" -> "Inteligência",
