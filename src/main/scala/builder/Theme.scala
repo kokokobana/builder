@@ -794,14 +794,4 @@ object Theme extends StyleSheet.Inline {
     textAlign.center,
     maxWidth(800 px)
   )
-
-  val fairUseContainer = style(
-    position.absolute,
-    bottom(0 px),
-    display.flex,
-    flexDirection.column,
-    alignItems.center,
-    width(100 %%),
-    zIndex(10)
-  )
 }

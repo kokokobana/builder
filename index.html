@@ -10,7 +10,8 @@
 body {
     background: #fbfbfb;
     font-size: 16px;
-    font-family: Helvetica,sans-serif
+    font-family: Helvetica,sans-serif;
+    overflow-y: scroll;
 }
 
 *,:after,:before {
@@ -36,16 +37,38 @@ body {
 
 .desktop-mode>ons-page {
     width: 480px;
-    max-height: 640px;
+    max-height: 580px;
     border-bottom: 1px solid #d7d7e1;
     top: 54px
 }
 
 .desktop-mode>div:first-child {
     left: calc((100% - 820px)/2 + 480px);
-    height: 640px;
+    height: 580px;
     width: 340px;
     top: 54px
+}
+
+.fair-use-container {
+    position: relative;
+    top: 640px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    -o-align-items: center;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
 }
 
 form {

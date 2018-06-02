@@ -43,7 +43,7 @@ object BuilderContainer {
             SplitterContent.apply(Builder(ctx))
           )
         } else Builder(ctx),
-        <.div(Theme.fairUseContainer, FairUse()).when(!util.common.isTouchDevice)
+        <.div(^.className := "fair-use-container", FairUse()).when(!util.common.isTouchDevice)
       )
     )
     }.componentDidMount(initialize)
