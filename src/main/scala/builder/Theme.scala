@@ -787,4 +787,21 @@ object Theme extends StyleSheet.Inline {
     justifyContent.center,
     fontSize(0.86 em)
   )
+
+  val fairUse = style(
+    margin(6 px),
+    color(c"#484646"),
+    textAlign.center,
+    maxWidth(800 px)
+  )
+
+  val fairUseContainer = style(
+    position.absolute,
+    bottom(0 px),
+    display.flex,
+    flexDirection.column,
+    alignItems.center,
+    width(100 %%),
+    zIndex(10)
+  )
 }

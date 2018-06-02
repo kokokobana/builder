@@ -1,6 +1,7 @@
 package builder.containers
 
 import builder._
+import builder.components.FairUse
 import builder.raw.onsen._
 import builder.state.{BuilderState, SideMenuState, ViewState}
 import diode.react.ModelProxy
@@ -9,7 +10,6 @@ import japgolly.scalajs.react.component.builder.Lifecycle.ComponentDidMount
 import japgolly.scalajs.react.vdom.VdomElement
 import japgolly.scalajs.react.vdom.html_<^._
 import org.bitbucket.wakfuthesaurus.shared.data.CharacterClass
-import org.scalajs.dom.window
 import scalacss.ScalaCssReact._
 
 import scala.scalajs.js
@@ -36,15 +36,14 @@ object BuilderContainer {
     .render_P { case Props(ctx, _) => VdomArray(
       if (!util.common.isTouchDevice) DesktopBar(ctx) else EmptyVdom,
       <.div(Theme.component, (^.className := "desktop-mode").when(!util.common.isTouchDevice),
-        if (util.common.isTouchDevice)
-          EmptyVdom
-        else <.div(Theme.characterPreview, CharacterCanvas()),
+        <.div(Theme.characterPreview, CharacterCanvas()).when(!util.common.isTouchDevice),
         if (util.common.isTouchDevice) {
           Splitter.apply(
             SideMenu(ctx),
             SplitterContent.apply(Builder(ctx))
           )
-        } else Builder(ctx)
+        } else Builder(ctx),
+        <.div(Theme.fairUseContainer, FairUse()).when(!util.common.isTouchDevice)
       )
     )
     }.componentDidMount(initialize)
@@ -202,7 +201,8 @@ object SideMenu {
             <.span(Theme.splitterLabel, ctx.localization.ui("element_priority")),
             ElementPriorityList(ctx)
           ),
-          <.div(Theme.splitterButton, ShareButton(ctx))
+          <.div(Theme.splitterButton, ShareButton(ctx)),
+          FairUse()
         )
       )
     )
