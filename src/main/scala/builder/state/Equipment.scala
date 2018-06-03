@@ -154,7 +154,7 @@ object SlotState {
     if (builder.util.item.makabraItemIds.contains(item.id)) 100
     else ItemType.withValueOpt(item.typeId).collect {
       case ItemType.Pet => 50
-      case ItemType.Mount => 40
+      case ItemType.Mount => 50
     }.getOrElse(item.level)
 
   def getRuneCount(item: Item): Int =
