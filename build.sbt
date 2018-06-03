@@ -77,7 +77,7 @@ libraryDependencies ++= Seq(
 
   // these need to be built locally
   "org.bitbucket.wakfuthesaurus" %%% "renderer" % "0.1-SNAPSHOT",
-  "org.bitbucket.wakfuthesaurus" %%% "shared" % "0.2-SNAPSHOT"
+  "org.bitbucket.wakfuthesaurus" %%% "shared" % "0.3-SNAPSHOT"
 )
 
 npmDependencies in Compile ++= Seq(

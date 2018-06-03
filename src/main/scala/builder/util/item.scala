@@ -1,7 +1,7 @@
 package builder.util
 
 import builder.lang.Translation
-import org.bitbucket.wakfuthesaurus.shared.data.{ItemRarity, ItemType, RuneType}
+import org.bitbucket.wakfuthesaurus.shared.data._
 
 object item {
   def isRarityRelic(rarity: Int): Boolean =
@@ -84,6 +84,8 @@ object item {
         s"$lvl ${translation.itemRune("vivacity")}"
       case Vitality =>
         s"${4 * lvl} ${translation.characteristic("hp")}"
+      case rune: EpicRune => translation.itemRune(rune.entryName)
+      case rune: RelicRune => translation.itemRune(rune.entryName)
     }
   }
 }

@@ -5,6 +5,7 @@ import cats.implicits._
 import cats.kernel.Monoid
 import monocle.Traversal
 import org.bitbucket.wakfuthesaurus.shared.data.CharacteristicType.CharacteristicType
+import org.bitbucket.wakfuthesaurus.shared.data.RuneType._
 import org.bitbucket.wakfuthesaurus.shared.data._
 
 import scala.language.postfixOps
@@ -19,26 +20,13 @@ final case class EffectApplication(
   velocity: Int = 0,
   vivacity: Int = 0
 ) {
-  def compile: UpdateFn =
-    modifiers.foldLeft(update) {
-      case (fn, RelativeFinalModifierPercent(src, dst, perc, max)) => fn andThen { ch =>
-        val value = math.min(EffectApplication.traversalOf(src).getAll(ch).head * perc / 100, max.getOrElse(Int.MaxValue))
-        EffectApplication.traversalOf(dst).modify(_ + value)(ch)
-      }
-      case (fn, RelativeFinalModifierThreshold(src, dst, th, max)) => fn andThen { ch =>
-        val value = math.min(EffectApplication.traversalOf(src).getAll(ch).head / th, max.getOrElse(Int.MaxValue))
-        EffectApplication.traversalOf(dst).modify(_ + value)(ch)
-      }
-      case (fn, FinalModifierPercent(charac, perc)) => fn andThen { ch =>
-        val lens = EffectApplication.traversalOf(charac)
-        lens.modify(_ + lens.getAll(ch).head * (perc / 100))(ch)
-      }
-      case (fn, Sublimation) => fn andThen { ch =>
-        if (ch.range >= 2) ch.copy(mp = ch.mp + 1)
-        else ch
-      }
-    } andThen runeEffects andThen finalHp andThen limitations
+  def compile(level: Int): Characteristics = {
+    val onStartFight = update(Characteristics(level))
+    modifiers.foldLeft(identity[Characteristics] _) { (acc, mod) =>
+      acc andThen mod.apply(onStartFight, level)
+    } andThen runeEffects andThen finalHp andThen limitations apply onStartFight
 
+  }
   private[this] val limitations: UpdateFn = characteristics =>
     characteristics.copy(
       hp = if (characteristics.hp < 1) 1 else characteristics.hp,
@@ -66,24 +54,50 @@ final case class EffectApplication(
 object EffectApplication {
   type UpdateFn = Characteristics => Characteristics
 
-  sealed trait FinalModifier
-  final case class RelativeFinalModifierPercent(
-    source: CharacteristicType,
-    target: CharacteristicType,
-    percent: Int,
-    max: Option[Int]
-  ) extends FinalModifier
-  final case class RelativeFinalModifierThreshold(
-    source: CharacteristicType,
-    target: CharacteristicType,
-    threshold: Int,
-    max: Option[Int]
-  ) extends FinalModifier
-  final case class FinalModifierPercent(
-    target: CharacteristicType,
-    percent: Int
-  ) extends FinalModifier
-  case object Sublimation extends FinalModifier // eliotropes skill
+  def justModifier(modifier: FinalModifier): EffectApplication =
+    EffectApplication(modifiers = modifier :: Nil)
+
+  sealed trait FinalModifier {
+    def apply(characteristics: Characteristics, level: Int): UpdateFn
+  }
+  object FinalModifier {
+    def instance(fn: (Characteristics, Int) => UpdateFn): FinalModifier = new FinalModifier {
+      override def apply(characteristics: Characteristics, level: Int): UpdateFn = fn(characteristics, level)
+    }
+
+    final case class RelativePercent(source: CharacteristicType,
+                                     target: CharacteristicType,
+                                     percent: Int,
+                                     max: Option[Int]) extends FinalModifier {
+      override def apply(characteristics: Characteristics, level: Int): UpdateFn = {
+        val value = {
+          val v = EffectApplication.traversalOf(source).getAll(characteristics).head * percent / 100
+          math.min(v, max.getOrElse(Int.MaxValue))
+        }
+        EffectApplication.traversalOf(target).modify(_ + value)
+      }
+    }
+
+    final case class RelativeThreshold(source: CharacteristicType,
+                                       target: CharacteristicType,
+                                       threshold: Int,
+                                       max: Option[Int]) extends FinalModifier {
+      override def apply(characteristics: Characteristics, level: Int): UpdateFn = {
+        val value = {
+          val v = EffectApplication.traversalOf(source).getAll(characteristics).head / threshold
+          math.min(v, max.getOrElse(Int.MaxValue))
+        }
+        EffectApplication.traversalOf(target).modify(_ + value)
+      }
+    }
+
+    final case class Percent(target: CharacteristicType, percent: Int) extends FinalModifier {
+      override def apply(characteristics: Characteristics, level: Int): UpdateFn = {
+        val lens = EffectApplication.traversalOf(target)
+        lens.modify(_ + lens.getAll(characteristics).head * (percent / 100))
+      }
+    }
+  }
 
   val EffectBlackList = Set(159870, 159868, 162014)
   val empty: EffectApplication = EffectApplication()
@@ -266,23 +280,23 @@ object EffectApplication {
       case ActionType.AoeMasteryGain ⇒
         apply(Characteristics.areaMastery.modify(_ + getMainIntParam))
       case ActionType.AoeMasteryLoss ⇒
-        apply(modifiers = FinalModifierPercent(CharacteristicType.AreaMastery, -getMainIntParam) :: Nil)
+        apply(modifiers = FinalModifier.Percent(CharacteristicType.AreaMastery, -getMainIntParam) :: Nil)
       case ActionType.SingleTargetMasteryGain ⇒
         apply(Characteristics.singleTargetMastery.modify(_ + getMainIntParam))
       case ActionType.SingleTargetMasteryLoss ⇒
-        apply(modifiers = FinalModifierPercent(CharacteristicType.SingleTargetMastery, -getMainIntParam) :: Nil)
+        apply(modifiers = FinalModifier.Percent(CharacteristicType.SingleTargetMastery, -getMainIntParam) :: Nil)
       case ActionType.MeleeMasteryGain ⇒
         apply(Characteristics.meleeMastery.modify(_ + getMainIntParam))
       case ActionType.MeleeMasteryLoss ⇒
-        apply(modifiers = FinalModifierPercent(CharacteristicType.MeleeMastery, -getMainIntParam) :: Nil)
+        apply(modifiers = FinalModifier.Percent(CharacteristicType.MeleeMastery, -getMainIntParam) :: Nil)
       case ActionType.DistanceMasteryGain ⇒
         apply(Characteristics.distanceMastery.modify(_ + getMainIntParam))
       case ActionType.DistanceMasteryLoss ⇒
-        apply(modifiers = FinalModifierPercent(CharacteristicType.DistanceMastery, -getMainIntParam) :: Nil)
+        apply(modifiers = FinalModifier.Percent(CharacteristicType.DistanceMastery, -getMainIntParam) :: Nil)
       case ActionType.BerserkMasteryGain ⇒
         apply(Characteristics.berserkMastery.modify(_ + getMainIntParam))
       case ActionType.BerserkMasteryLoss ⇒
-        apply(modifiers = FinalModifierPercent(CharacteristicType.BerserkMastery, -getMainIntParam) :: Nil)
+        apply(modifiers = FinalModifier.Percent(CharacteristicType.BerserkMastery, -getMainIntParam) :: Nil)
       case ActionType.DodgeGain ⇒
         apply(Characteristics.dodge.modify(_ + getMainIntParam))
       case ActionType.DodgeLoss ⇒
@@ -368,7 +382,7 @@ object EffectApplication {
             if (effect.originalParams.length >= 10) getParamUnsafe(4).toInt
             else 0
           apply(modifiers =
-            RelativeFinalModifierPercent(src, dst, percentToCopy, if (max == 0) None else Some(max)) :: Nil)
+            FinalModifier.RelativePercent(src, dst, percentToCopy, if (max == 0) None else Some(max)) :: Nil)
         }.getOrElse(empty)
       case ActionType.AddCharacValueToAnotherInRealTimeWithThreshold =>
         val value = getParamUnsafe(0).toInt
@@ -381,12 +395,16 @@ object EffectApplication {
             if (effect.originalParams.length >= 10) getParamUnsafe(4).toInt
             else 0
           apply(modifiers =
-            RelativeFinalModifierThreshold(src, dst, threshold, if (max == 0) None else Some(max)) :: Nil)
+            FinalModifier.RelativeThreshold(src, dst, threshold, if (max == 0) None else Some(max)) :: Nil)
         }.getOrElse(empty)
       case ActionType.UpdateHpMaxPercentModifier =>
         apply(finalHpPercent = getMainIntParam)
-      case _ if effect.id == 161950 =>
-        apply(modifiers = Sublimation :: Nil)
+      case _ if effect.id == 161950 => // sublimation
+        val sublimation = FinalModifier.instance { (ch, _) =>
+          if (ch.range >= 2) Characteristics.mp.modify(_ + 1)
+          else identity
+        }
+        justModifier(sublimation)
     }.getOrElse(empty)
   }
 
@@ -431,6 +449,57 @@ object EffectApplication {
       apply(velocity = rune.level)
     case RuneType.Vivacity ⇒
       apply(vivacity = rune.level)
+    case SurgicalPrecision =>
+      val mod = FinalModifier.instance { (base, _) =>
+        if (base.range <= 1) Characteristics.healsPerformed.modify(_ + 20)
+        else identity
+      }
+      justModifier(mod)
+    case Measure =>
+      val mod = FinalModifier.instance { (base, _) =>
+        if (base.block >= 40) Characteristics.criticalHits.modify(_ + 10)
+        else identity
+      }
+      justModifier(mod)
+    case Unraveling =>
+      val mod = FinalModifier.instance { (base, _) =>
+        val toTransfer = (base.criticalMastery * 0.5).toInt
+        Characteristics.criticalMastery.modify(_ - toTransfer) andThen
+          Characteristics.generalMastery.modify(_ + toTransfer)
+      }
+      justModifier(mod)
+    case Inflexibility =>
+      val mod = FinalModifier.instance { (base, _) =>
+        if (base.ap <= 10) Characteristics.damageInflicted.modify(_ + 20)
+        else identity
+      }
+      justModifier(mod)
+    case Steadfast =>
+      val mod = FinalModifier.instance { (base, _) =>
+        if (base.criticalHits <= 10) Characteristics.damageInflicted.modify(_ + 10)
+        else identity
+      }
+      justModifier(mod)
+    case IronHealth =>
+      apply(finalHpPercent = -40)
+    case PositioningScience =>
+      apply(Characteristics.generalResist.modify(_ + 50) andThen Characteristics.rearResist.modify(_ - 100))
+    case Brutality =>
+      val mod = FinalModifier.instance { (base, _) =>
+        if (base.areaMastery > base.meleeMastery)
+          Characteristics.areaMastery.modify(_ + base.meleeMastery)
+        else identity
+      }
+      justModifier(mod)
+    case HerculeanStrength =>
+      val mod = FinalModifier.instance { (base, lvl) =>
+        if (base.ap % 2 != 0) {
+          val buff = (lvl * 1.5).toInt
+          Characteristics.dodge.modify(_ + buff) andThen Characteristics.lock.modify(_ + buff)
+        }
+        else identity
+      }
+      justModifier(mod)
     case _ => empty
   }
 

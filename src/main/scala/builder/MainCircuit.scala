@@ -153,7 +153,7 @@ object MainCircuit extends Circuit[BuilderState] with ReactConnector[BuilderStat
         case SetCharacterState(state, sideEffect) =>
           updated(state, sideEffect >> Effect.action(RecalculateCharacteristics))
         case RecalculateCharacteristics =>
-          val newValue = EffectApplication.fromCharacter(value).compile(Characteristics(value.level.level))
+          val newValue = EffectApplication.fromCharacter(value).compile(value.level.level)
           effectOnly(Effect.action(SetCharacteristics(newValue)))
         case ShareBuild => effectOnly {
           Effect.action(SetBuildCodeDialog(Pending())) >>

@@ -18,85 +18,93 @@ import scalacss.ScalaCssReact._
 import scala.Function.const
 
 object RuneDialog {
-  final case class Props(
-    context: Context,
-    state: Option[StateSnapshot[Option[Rune]]],
-    slotType: Option[RuneSlotType],
-    onClose: Callback
-  )
+  final case class Props(context: Context,
+                         state: Option[StateSnapshot[Option[Rune]]],
+                         slotType: Option[RuneSlotType],
+                         rarity: ItemRarity,
+                         hasUniqueRune: Boolean,
+                         onClose: Callback)
 
-  def apply(
-    context: Context,
-    state: Option[StateSnapshot[Option[Rune]]],
-    slotType: Option[RuneSlotType],
-    onClose: Callback
-  ): VdomElement = component(Props(context, state, slotType, onClose))
+  def apply(context: Context,
+            state: Option[StateSnapshot[Option[Rune]]],
+            slotType: Option[RuneSlotType],
+            rarity: ItemRarity,
+            hasUniqueRune: Boolean,
+            onClose: Callback): VdomElement =
+    component(Props(context, state, slotType, rarity, hasUniqueRune, onClose))
 
-  private val component = ScalaFnComponent[Props] { case Props(ctx, maybeSlot, slotType, onClose) =>
-    maybeSlot match {
-      case Some(slot) =>
-        val types = slotType.collect {
-          case RuneSlotType.Supportive => RuneType.supportive
-          case RuneSlotType.Offensive => RuneType.offensive
-          case RuneSlotType.Defensive => RuneType.defensive
-        }.getOrElse(Seq.empty)
+  private val component = ScalaFnComponent[Props] {
+    case Props(ctx, maybeSlot, slotType, rarity, hasUniqueRune, onClose) =>
+      maybeSlot match {
+        case Some(slot) =>
+          val types = slotType.collect {
+            case RuneSlotType.Supportive => RuneType.supportive
+            case RuneSlotType.Offensive => RuneType.offensive
+            case RuneSlotType.Defensive => RuneType.defensive
+          }.getOrElse(Seq.empty)
 
-        val value = slot.value.fold("-1")(_.`type`.entryName)
-        AlertDialog(isOpen = true, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")(ctx.localization.ui("customize_rune")),
-          <.div(Theme.runePopupContent, ^.className := "alert-dialog-content")(
-            Select(
-              onChange = { ev =>
-                RuneType.withNameOption(ev.target.value) match {
-                  case Some(rt) => slot.modState(st => Some(st.fold(Rune(rt, 10))(_.copy(`type` = rt))))
-                  case None => slot.setState(None)
-                }
-              },
-              value = value
-            )(
-              <.option(^.value := "-1")(ctx.localization.ui("empty_rune")),
-              types.map { tp =>
-                <.option(^.key := tp.entryName, ^.value := tp.entryName, ctx.localization.itemRune(tp.entryName))
-              }.toVdomArray
+          val combinedTypes = rarity match {
+            case ItemRarity.Relic if !hasUniqueRune || slot.value.exists(_.`type`.isInstanceOf[RelicRune]) =>
+              RuneType.relic ++ types
+            case ItemRarity.Epic if !hasUniqueRune || slot.value.exists(_.`type`.isInstanceOf[EpicRune]) =>
+              RuneType.epic ++ types
+            case _ => types
+          }
+
+          val value = slot.value.fold("-1")(_.`type`.entryName)
+          AlertDialog(isOpen = true, isCancelable = false)(
+            <.div(^.className := "alert-dialog-title")(ctx.localization.ui("customize_rune")),
+            <.div(Theme.runePopupContent, ^.className := "alert-dialog-content")(
+              Select(
+                onChange = { ev =>
+                  RuneType.withNameOption(ev.target.value) match {
+                    case Some(rt) => slot.modState(st => Some(st.fold(Rune(rt, 10))(_.copy(`type` = rt))))
+                    case None => slot.setState(None)
+                  }
+                },
+                value = value
+              )(
+                <.option(^.value := "-1")(ctx.localization.ui("empty_rune")),
+                combinedTypes.map { tp =>
+                  <.option(^.key := tp.entryName, ^.value := tp.entryName, ctx.localization.itemRune(tp.entryName))
+                }.toVdomArray
+              ),
+              slot.value match {
+                case Some(rune) =>
+                  <.div(Theme.runeLevelInputContainer,
+                    <.div(Theme.runeLevelInput,
+                      NumberInput(
+                        initialValue = Some(rune.level),
+                        onChange = i => slot.modState(_.map(_.copy(level = i))),
+                        min = 0,
+                        max = 10
+                      )
+                    ), ctx.localization.ui("level_short")
+                  )
+                case None => EmptyVdom
+              }
             ),
-            slot.value match {
-              case Some(rune) =>
-                <.div(Theme.runeLevelInputContainer,
-                  <.div(Theme.runeLevelInput,
-                    NumberInput(
-                      initialValue = Some(rune.level),
-                      onChange = i => slot.modState(_.map(_.copy(level = i))),
-                      min = 0,
-                      max = 10
-                    )
-                  ), ctx.localization.ui("level_short")
-                )
-              case None => EmptyVdom
-            }
-          ),
-          <.div(^.className := "alert-dialog-footer")(
-            <.button(
-              ^.className := "alert-dialog-button",
-              ^.onClick --> onClose
-            )("OK")
+            <.div(^.className := "alert-dialog-footer")(
+              <.button(
+                ^.className := "alert-dialog-button",
+                ^.onClick --> onClose
+              )("OK")
+            )
           )
-        )
-      case None =>
-        AlertDialog(isOpen = false, isCancelable = false)(
-          <.div(^.className := "alert-dialog-title")("Customize a rune slot"),
-          <.div(^.className := "alert-dialog-content"),
-          <.div(^.className := "alert-dialog-footer")
-        )
-    }
+        case None =>
+          AlertDialog(isOpen = false, isCancelable = false)(
+            <.div(^.className := "alert-dialog-title")("Customize a rune slot"),
+            <.div(^.className := "alert-dialog-content"),
+            <.div(^.className := "alert-dialog-footer")
+          )
+      }
   }
 }
 
 object ItemPage {
-  final case class Props(
-    context: Context,
-    state: StateSnapshot[SlotState],
-    onBack: Callback
-  )
+  final case class Props(context: Context,
+                         state: StateSnapshot[SlotState],
+                         onBack: Callback)
 
   final case class State(dialog: Option[Int])
 
@@ -120,13 +128,19 @@ object ItemPage {
       val runeSnapshot = state.dialog.map { i =>
         slot.zoomStateL(SlotState.runes).zoomState(_(i))(v => _.updated(i, v))
       }
+      val rarity = ItemRarity.withValue(slot.value.item.rarity)
+      val hasUniqueRune =
+        slot.value.runes.exists(_.map(_.`type`).exists {
+          case _: RelicRune | _: EpicRune => true
+          case _ => false
+        })
       Page(renderToolbar = renderToolbar(ctx, slot.value.item, onBack))(
         <.div(Theme.itemHeaderRow,
           ctx.localization.ui("level_short"),
           " ",
           slot.value.level,
           " ",
-          ctx.localization.itemRarity(ItemRarity.withValue(slot.value.item.rarity).entryName),
+          ctx.localization.itemRarity(rarity.entryName),
           " ",
           slot.value.item.typeName
         ).render,
@@ -135,7 +149,7 @@ object ItemPage {
           <.div(Theme.itemHeaderRow, ctx.localization.ui("runes")).render
         else EmptyVdom,
         renderRunes(ctx, slot),
-        RuneDialog(ctx, runeSnapshot, slot.value.getRuneSlotType, $.setState(State(None)))
+        RuneDialog(ctx, runeSnapshot, slot.value.getRuneSlotType, rarity, hasUniqueRune, $.setState(State(None)))
       )
     }
 
