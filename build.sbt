@@ -86,7 +86,7 @@ npmDependencies in Compile ++= Seq(
   "onsenui" -> "2.10.1",
   "react-onsenui" -> "1.11.0",
   "react-infinite-scroller" -> "1.1.4",
-  "react-responsive-select" -> "4.0.0"
+  "react-responsive-select" -> "4.0.1"
 )
 npmDevDependencies in Compile ++= Seq(
   "webpack-closure-compiler" -> "2.1.6"
