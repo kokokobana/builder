@@ -52,7 +52,7 @@ scalacOptions ++= Seq(
   "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
 )
 
-val scalaJsReactVersion = "1.2.0"
+val scalaJsReactVersion = "1.2.3"
 val monocleVersion = "1.5.1-cats"
 val diodeVersion = "1.1.3.120"
 val scalaCssVersion = "0.5.5"
@@ -71,7 +71,7 @@ libraryDependencies ++= Seq(
   "io.circe" %%% "circe-generic" % circeVersion,
   "io.circe" %%% "circe-parser" % circeVersion,
   "com.payalabs" %%% "scalajs-react-bridge" % "0.6.0",
-  "org.typelevel" %%% "cats-core" % "1.1.0",
+  "org.typelevel" %%% "cats-core" % "1.2.0",
   "com.chuusai" %%% "shapeless" % "2.3.3",
   "org.scala-js" %%% "scalajs-dom" % "0.9.5",
 
@@ -81,12 +81,12 @@ libraryDependencies ++= Seq(
 )
 
 npmDependencies in Compile ++= Seq(
-  "react" -> "16.4.0",
-  "react-dom" -> "16.4.0",
-  "onsenui" -> "2.10.1",
-  "react-onsenui" -> "1.11.0",
-  "react-infinite-scroller" -> "1.1.4",
-  "react-responsive-select" -> "4.0.1"
+  "react" -> "16.4.2",
+  "react-dom" -> "16.4.2",
+  "onsenui" -> "2.10.4",
+  "react-onsenui" -> "1.11.1",
+  "react-infinite-scroller" -> "1.2.0",
+  "react-responsive-select" -> "4.3.2"
 )
 npmDevDependencies in Compile ++= Seq(
   "webpack-closure-compiler" -> "2.1.6"
@@ -97,7 +97,7 @@ scalaJSLinkerConfig ~= {
 
 webpackBundlingMode in fastOptJS := BundlingMode.LibraryOnly()
 
-version in webpack := "4.9.1"
+version in webpack := "4.16.3"
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js")
 
